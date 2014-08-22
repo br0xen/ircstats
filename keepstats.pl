@@ -4,6 +4,8 @@ use vars qw($VERSION %IRSSI);
 use Irssi qw(command_bind signal_add);
 use DBI;
 
+# This is the irssi plugin for the ircstats application
+
 $VERSION = '0.10';
 %IRSSI = (
   authors => 'Brian Buller',
