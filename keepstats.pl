@@ -18,6 +18,8 @@ $VERSION = '0.10';
 my @statsChannels = ("#devict");
 # This needs to be set to the full path of the stats database in the php application
 my $db = "stats.db";
+# This is the nick of the user with this plugin installed, for the 'own' signals
+my $myname = "br0xen";
 
 sub should_bail {
   my ($server, $target, $nick, $nick_addr) = @_;
@@ -53,8 +55,8 @@ sub track_stats_kick {
 
 sub track_stats_own_message {
   my ($server, $msg, $target) = @_;
-  if(should_bail($server, $target, "br0xen", "")) { return 0; }
-  send_message_to_database($server, $msg, 'br0xen', '', $target, 'MESSAGE');
+  if(should_bail($server, $target, $myname, "")) { return 0; }
+  send_message_to_database($server, $msg, $myname, '', $target, 'MESSAGE');
 }
 sub track_stats_message {
   my ($server, $msg, $nick, $nick_addr, $target) = @_;
@@ -70,8 +72,8 @@ sub track_stats_action {
 
 sub track_stats_ownaction {
   my ($server, $msg, $target) = @_;
-  if(should_bail($server, $target, "br0xen", "")) { return 0; }
-  send_message_to_database($server, $msg, 'br0xen', '', $target, 'ACTION');
+  if(should_bail($server, $target, $myname, "")) { return 0; }
+  send_message_to_database($server, $msg, $myname, '', $target, 'ACTION');
 }
 
 sub send_joinpart_to_database {
