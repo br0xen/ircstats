@@ -1,0 +1,43 @@
+.user_position {
+  margin: 3px;
+}
+
+.user_data {
+  margin: 3px;
+}
+
+#stats_user_list {
+  display: inline-block;
+  padding: 0 0 0 10px;
+  text-align: center;
+  border: 1px solid #000;
+  border-radius: 10px 0 0 10px;
+}
+#stats_user_list>div {
+  max-height: 400px;
+  overflow-y: auto;
+}
+#stats_user_list .users_rank_col {
+  text-align: left;
+}
+#stats_user_list .users_name_col {
+  text-align: center;
+}
+#stats_user_list .users_messages_col {
+  text-align: right;
+}
+
+#stats_top_users {
+  border: 1px solid #000;
+  border-radius: 0 10px 10px 0;
+  padding-right: 10px;
+}
+
+#stats_active_time,
+#stats_letter_usage,
+#stats_word_usage {
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+}

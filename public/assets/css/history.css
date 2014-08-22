@@ -1,0 +1,85 @@
+div.content {
+  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-size: 13px;
+  color: #FFF;
+  background-color: #000;
+}
+
+a {
+  color: #9AFE2E;
+}
+
+a:visited {
+  color: #56BA0A;
+}
+
+span.irc_nick {
+  font-weight: bold;
+}
+
+div.irc_message {
+}
+
+div.irc_action {
+  font-style: italic;
+}
+
+div.popup_controls i {
+  cursor: pointer;
+}
+div.popup_controls {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  height: 20px;
+  width: auto;
+  padding: 10px;
+  border-left: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+  background-color: #222;
+  font-size: 20px;
+  border-radius: 0 0 0 10px;
+}
+div.popup_controls #search_field {
+  margin-top:-4px;
+  margin-right: 4px;
+}
+div.popup_button {
+  width: 20px;
+}
+
+div.popup_tooltip {
+  display: none;
+  position: fixed;
+  top: 45px;
+  right: 0px;
+  height: 20px;
+  width: auto;
+  padding: 2px 5px 0 5px;
+  border-left: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
+  background-color: #222;
+  border-radius: 10px 0 0 10px;
+}
+
+div.irc_message,
+div.irc_action {
+  cursor: pointer;
+}
+
+div.irc_message:hover,
+div.irc_action:hover {
+  background-color: #555;
+}
+
+div.irc_message.selected,
+div.irc_action.selected {
+  background-color: #0078e7;
+}
+
+div.history {
+  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-size: 13px;
+  color: #FFF;
+  background-color: #000;
+}
