@@ -29,9 +29,13 @@ class Main_controller extends Controller {
   }
 
   public function statistics() {
+    $this->view_data['current_page'] = 'statistics';
     $view_title = 'IRC Statistics Dashboard';
     $get_stats = $this->irc->getStatistics();
     $last_stat = array_shift($get_stats);
+    if(isset($this->parms['user']) && !empty($this->parms['user'])) {
+      $this->view_data['user'] = $this->parms['user'];
+    }
     // Calculate Statistics since the last Calculation ($last_stat['end_time'])
     $stats = json_decode($last_stat['statistics'], TRUE);
     $this->view_data['stats'] = $stats;
@@ -68,6 +72,7 @@ class Main_controller extends Controller {
   }
 
   public function history() {
+    $this->view_data['current_page'] = 'history';
     if(count($this->parms) > 0) {
       $this->view_data['is_searching'] = TRUE;
     }
@@ -100,6 +105,17 @@ class Main_controller extends Controller {
     array_push($this->view_data['stylesheets'], '/assets/css/history.css');
     array_push($this->view_data['scripts'], '/assets/js/history.js');
     $this->load_views(array('header','history','footer'), $this->view_data);
+  }
+
+  public function links() {
+    $msgs = $this->irc->searchMessages(array('http://','https://'), array());
+    $this->view_data['current_page'] = 'links';
+    $this->view_data['view_title'] = 'Posted Links';
+    usort($msgs, "_cmp_link_array");
+    $this->view_data['link_messages'] = $msgs;
+    $this->view_data['scripts'][]='/assets/js/links.js';
+    $this->view_data['stylesheets'][]='/assets/css/links.css';
+    $this->load_view(array('header','links','footer'), $this->view_data);
   }
 
   public function doStats() {
@@ -175,6 +191,25 @@ class Main_controller extends Controller {
     $jpts = $this->irc->getJoinParts($parms);
   }
 
+  public function getJSONHistory() {
+    if(count($this->parms) > 0) {
+      $this->view_data['is_searching'] = TRUE;
+    }
+    if(isset($this->parms['search'])) {
+      return $this->_search();
+    }
+    if(!isset($this->parms['start'])) {
+      $this->parms['start'] = strtotime('-1 day');
+    }
+    if(!isset($this->parms['end'])) {
+      $this->parms['end'] = strtotime('now');
+    }
+    $msgs = $this->irc->getMessages($this->parms);
+    $jpts = $this->irc->getJoinParts($this->parms);
+    $this->view_data['json'] = $msgs;
+    $this->load_view('json_output', $this->view_data);
+  }
+
   public function getJSONStats() {
     $get_stats = $this->irc->getStatistics();
     $last_stat = array_shift($get_stats);
@@ -182,4 +217,11 @@ class Main_controller extends Controller {
     $this->view_data['json'] = $last_stat;
     $this->load_view('json_output', $this->view_data);
   }
+}
+
+function _cmp_link_array($a, $b) {
+  if($a['time'] == $b['time']) {
+    return 0;
+  }
+  return ($a['time'] < $b['time']) ? 1 : -1;
 }

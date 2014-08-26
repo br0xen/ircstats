@@ -45,12 +45,20 @@ function convert_ascii($string) {
   return $string;
 }
 
-function linkify($str) {
-  return ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","<a href=\"\\0\" rel=\"nofollow\">\\0</a>", $str);
+function extract_links($str) {
+  $match = array();
+  preg_match_all('#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#', $str, $match);
+  return $match;
+}
+
+function linkify($str, $target="") {
+  $pattern = "/(?i)\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))/";
+  return preg_replace($pattern, "<a href=\"$1\" ".(!empty($target)?"target=\"".$target."\"":"")." rel=\"nofollow\">$1</a>", $str);
 }
 
 function removeLinks($str) {
-  return ereg_replace("[[:alpha:]]+://[^<>[:space:]]+[[:alnum:]/]","", $str);
+  $pattern = "/(?i)\b((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))/";
+  return preg_replace($pattern, "", $str);
 }
 
 function sanitize($str) {

@@ -1,12 +1,3 @@
-<div class="header">
-  <div class="pure-menu pure-menu-open pure-menu-horizontal">
-    <a href=""><?php echo $current_channel.' - '.$view_title;?></a>
-    <ul>
-      <li class="pure-menu-selected"><a href="/statistics">Statistics</a></li>
-      <li><a href="/history">History</a></li>
-    </ul>
-  </div>
-</div>
 <div class="content">
     <script>
       var jump_back_time = <?php echo $jump_back_day; ?>,
@@ -19,7 +10,7 @@
       <span id="view_range" class="hide popup_button display_tooltip" data-tooltip="Show all activity from first selected to last">
         <i class="fa fa-arrows-v"></i>
       </span>
-      <?php if($is_searching): ?>
+      <?php if(isset($is_search) && $is_searching): ?>
       <span id="clear_search" class="popup_button display_tooltip" data-tooltip="Clear current search/filters">
         <i class="fa fa-search-minus"></i>
       </span>

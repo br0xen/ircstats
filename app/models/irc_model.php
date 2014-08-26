@@ -57,7 +57,14 @@ class Irc_model extends Model {
 
   public function searchMessages($srch_term, $parms) {
     $select_query = 'SELECT * FROM message ';
-    $where_query = $this->_addToWhere('', 'message LIKE "%'.$srch_term.'%"');
+    if(is_array($srch_term)) {
+      $where_query = '';
+      foreach($srch_term as $a_term) {
+        $where_query = $this->_addToWhere($where_query, 'message LIKE "%'.$a_term.'%"', 'OR');
+      }
+    } else {
+      $where_query = $this->_addToWhere('', 'message LIKE "%'.$srch_term.'%"');
+    }
     if($parms!==NULL) {
       // Build the query manually
       foreach($parms as $k => $v) {
