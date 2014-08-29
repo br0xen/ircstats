@@ -36,13 +36,15 @@ class Main_controller extends Controller {
     if(isset($this->parms['user']) && !empty($this->parms['user'])) {
       $this->view_data['user'] = $this->parms['user'];
     }
+    if(isset($this->parms['wordlength']) && is_numeric($this->parms['wordlength'])) {
+      $this->view_data['override_min_word_length']=$this->parms['wordlength'];
+    }
     // Calculate Statistics since the last Calculation ($last_stat['end_time'])
     $stats = json_decode($last_stat['statistics'], TRUE);
     $this->view_data['stats'] = $stats;
     $this->view_data['stats_time'] = $last_stat['end_time'];
     $this->view_data['view_title'] = 'Statistics as of '.date('Y-m-d H:i:s', $last_stat['end_time']);
     $this->view_data['scripts'][]='/assets/js/highcharts.js';
-    $this->view_data['scripts'][]='/assets/js/tagcloud.js';
     $this->view_data['scripts'][]='/assets/js/dashboard.js';
     $this->view_data['stylesheets'][]='/assets/css/dashboard.css';
     $this->load_views(array('header', 'dashboard', 'footer'), $this->view_data);

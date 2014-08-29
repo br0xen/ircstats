@@ -1,11 +1,13 @@
 window.onload = function() {
   ajaxJSON('/getJSONStats').then(function(r) {
     var active_time_data = r.statistics.active_time,
-        letter_stats_data = r.statistics.letter_usage;
+        letter_stats_data = r.statistics.letter_usage,
+        word_stats_data = r.statistics.word_usage;
     if(user != "") {
       if(typeof r.statistics.users[user] != 'undefined') {
         active_time_data = r.statistics.users[user].active_time;
         letter_stats_data = r.statistics.users[user].letter_usage;
+        word_stats_data = r.statistics.users[user].word_usage;
       }
     }
     var letter_stats = [],
@@ -207,5 +209,81 @@ window.onload = function() {
         }]
       });
     }
+    var all_words = [],
+        num_top_words = 30,
+        min_word_length = 4,
+        total_word_num = 0;
+    if(typeof override_min_word_length == 'number' 
+        && isFinite(override_min_word_length)
+        && override_min_word_length%1==0) {
+      min_word_length = override_min_word_length;
+    }
+    B('#min_word_length').val(min_word_length);
+    B('#update_min_word_length').on('click',function(){
+      update_min_word_length();
+    });
+    B("#min_word_length").on('keypress',function(e) {
+      if(e.keyCode == 13) {
+        update_min_word_length();
+      }
+    });
+    B('#reset_min_word_length').on('click',function(){
+      update_min_word_length(4);
+    });
+    for(var word in word_stats_data) { total_word_num++; }
+    for(var word in word_stats_data) {
+      if(word.trim() == '' || word.length < min_word_length) { continue; }
+      for(var i = 0; i < total_word_num; i++) {
+        var do_break = false;
+        if(typeof all_words[i] == 'undefined') {
+          all_words[i] = {
+            "word": word,
+            "instances": word_stats_data[word]
+          };
+          do_break = true;
+        } else {
+          if(all_words[i].instances >= word_stats_data[word]) {
+            continue;
+          } else {
+            // DETHRONED!
+            all_words.splice(i, 0, {
+              "word": word,
+              "instances": word_stats_data[word]
+            });
+            do_break = true;
+          }
+        }
+        if(do_break) { break; }
+      }
+    }
+    var categories = [],
+        word_instances = [],
+        top_words = all_words.slice(0, num_top_words);
+    for(var i in top_words) {
+      categories.push(top_words[i].word);
+      word_instances.push(top_words[i].instances);
+    }
+
+    var word_usage_chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'stats_word_usage',
+        type: 'bar'
+      },
+      title: {
+        text: 'Word Usage'
+      },
+      legend: { enabled: false },
+      xAxis: { categories: categories },
+      yAxis: { title: { text: 'Instances' } },
+      series: [{ name: '', data: word_instances}]
+    });
   });
 };
+
+function update_min_word_length(new_length) {
+  var new_wl = (typeof new_length == 'undefined')?B('#min_word_length').val():new_length,
+      url_1 = '/statistics/',
+      url_2 = (user != '')?'user/'+user+'/':'',
+      url_3 = 'wordlength/'+new_wl+'/';
+  window.location = url_1+url_2+url_3;
+}
