@@ -4,8 +4,6 @@ use vars qw($VERSION %IRSSI);
 use Irssi qw(command_bind signal_add);
 use DBI;
 
-# This is the irssi plugin for the ircstats application
-
 $VERSION = '0.10';
 %IRSSI = (
   authors => 'Brian Buller',
@@ -14,12 +12,17 @@ $VERSION = '0.10';
   description => 'Track stats/history!'
 );
 
-# Right now, I'm just keeping stats in #devict
+# Right now I'm just keeping stats in #devict
 my @statsChannels = ("#devict");
 # This needs to be set to the full path of the stats database in the php application
 my $db = "stats.db";
 # This is the nick of the user with this plugin installed, for the 'own' signals
 my $myname = "br0xen";
+# Since QUITs don't have a channel associated with them, you can turn tracking them off here
+# You may want to do this if you are keeping stats for multiple channels. Speaking of, there may 
+# be other changes that you want to make to all of this for that case... I haven't really tested it.
+# If you do it, feel free to make a pull request.
+my $trackquits = 1;
 
 sub should_bail {
   my ($server, $target, $nick, $nick_addr) = @_;
@@ -43,9 +46,10 @@ sub track_stats_part {
   send_joinpart_to_database($server, $nick, $nick_addr, $target, "PART", $reason, "");
 }
 sub track_stats_quit {
-  my ($server, $target, $nick, $nick_addr, $reason) = @_;
-  if(should_bail($server, $target, $nick, $nick_addr)) { return 0; }
-  send_joinpart_to_database($server, $nick, $nick_addr, $target, "QUIT", $reason, "");
+  my ($server, $nick, $nick_addr, $reason) = @_;
+  if($trackquits) {
+    send_joinpart_to_database($server, $nick, $nick_addr, "", "QUIT", $reason, "");
+  }
 }
 sub track_stats_kick {
   my ($server, $target, $nick, $kicker, $nick_addr, $reason) = @_;

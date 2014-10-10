@@ -122,6 +122,35 @@ class Irc_model extends Model {
     return $this->db->query($select_query.$where_query)->fetch_array();
   }
 
+  public function getQuits($parms=NULL) {
+    $select_query = 'SELECT * FROM joinpart ';
+    $where_query = $this->_addToWhere('', 'type = "QUIT"');
+    if($parms!==NULL) {
+      // Build the query manually
+      foreach($parms as $k => $v) {
+        switch($k) {
+          case 'start':
+            $where_query = $this->_addToWhere($where_query, 'time >= '.$v);
+            break;
+          case 'end':
+            $where_query = $this->_addToWhere($where_query, 'time <= '.$v);
+            break;
+          case 'channel':
+            $this->channel = '#'.$v;
+            break;
+          case 'time':
+          case 'nick':
+          case 'address':
+          case 'server':
+          case 'message':
+          case 'kicker':
+            $where_query = $this->_addToWhere($where_query, $k.' = "'.$v.'"');
+        }
+      }
+    }
+    return $this->db->query($select_query.$where_query)->fetch_array();
+  }
+
   public function getStatistics($parms=NULL) {
     if(!isset($parms)) {
       return $this->db->query('SELECT * FROM statistics WHERE ID = (SELECT MAX(ID) FROM statistics)')->fetch_array();

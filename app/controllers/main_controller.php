@@ -94,8 +94,11 @@ class Main_controller extends Controller {
     }
     if(isset($this->parms['hide_joinparts'])) {
       unset($this->parms['hide_joinparts']);
+      $jpts = array();
+      $quits = array();
     } else {
       $jpts = $this->irc->getJoinParts($this->parms);
+      $quits = $this->irc->getQuits($this->parms);
     }
     $msgs = $this->irc->getMessages($this->parms);
     $final_array = array();
@@ -104,6 +107,9 @@ class Main_controller extends Controller {
     }
     foreach($jpts as $a_jpt) {
       $final_array[$a_jpt['time']] = $a_jpt;
+    }
+    foreach($quits as $a_quit) {
+      $final_array[$a_quit['time']] = $a_quit;
     }
     ksort($final_array);
     $this->view_data['jump_back_day'] = strtotime('-1 day', $this->parms['start']);
