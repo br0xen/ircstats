@@ -73,6 +73,11 @@ class Main_controller extends Controller {
     $this->load_views(array('header','history','footer'), $this->view_data);
   }
 
+  public function testhistory() {
+    $jpts = $this->irc->getJoinParts($this->parms);
+    print_r($jpts);
+  }
+
   public function history() {
     $this->view_data['current_page'] = 'history';
     if(count($this->parms) > 0) {
@@ -87,8 +92,12 @@ class Main_controller extends Controller {
     if(!isset($this->parms['end'])) {
       $this->parms['end'] = strtotime('now');
     }
+    if(isset($this->parms['hide_joinparts'])) {
+      unset($this->parms['hide_joinparts']);
+    } else {
+      $jpts = $this->irc->getJoinParts($this->parms);
+    }
     $msgs = $this->irc->getMessages($this->parms);
-    $jpts = $this->irc->getJoinParts($this->parms);
     $final_array = array();
     foreach($msgs as $a_msg) {
       $final_array[$a_msg['time']] = $a_msg;

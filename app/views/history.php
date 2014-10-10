@@ -36,13 +36,37 @@
       <div class="irc_message" data-id="<?php echo $a_h['id'];?>">
         <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
         <span>&lt;<span class="irc_nick"><?php echo $a_h['nick']; ?></span>&gt; </span>
-        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii($a_h['message']))); ?></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii($a_h['message'])), "_blank"); ?></span>
       </div>
   <?php elseif($a_h['type'] == 'ACTION'): ?>
       <div class="irc_action" data-id="<?php echo $a_h['id'];?>">
         <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
         <span>* <span class="irc_nick"><?php echo $a_h['nick']; ?></span></span>
-        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii($a_h['message']))); ?></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii($a_h['message'])), "_blank"); ?></span>
+      </div>
+  <?php elseif($a_h['type'] == 'KICK'): ?>
+      <div class="irc_kick" data-id="<?php echo $a_h['id'];?>">
+        <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
+        <span>-!- <span class="irc_nick"><?php echo $a_h['nick']; ?></span></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii('was kicked from '.$a_h['channel'].' by '.$a_h['kicker'].' ['.$a_h['message'].']')), "_blank"); ?></span>
+      </div>
+  <?php elseif($a_h['type'] == 'PART'): ?>
+      <div class="irc_join" data-id="<?php echo $a_h['id'];?>">
+        <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
+        <span>-!- <span class="irc_nick"><?php echo $a_h['nick']; ?></span></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii('has left '.$a_h['channel'].' ['.$a_h['message'].']')), "_blank"); ?></span>
+      </div>
+  <?php elseif($a_h['type'] == 'JOIN'): ?>
+      <div class="irc_join" data-id="<?php echo $a_h['id'];?>">
+        <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
+        <span>-!- <span class="irc_nick"><?php echo $a_h['nick']; ?></span></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii('has joined '.$a_h['channel'])), "_blank"); ?></span>
+      </div>
+  <?php elseif($a_h['type'] == 'QUIT'): ?>
+      <div class="irc_join" data-id="<?php echo $a_h['id'];?>">
+        <span class="irc_time"><?php echo getDateString($a_h['time']); ?></span>
+        <span>-!- <span class="irc_nick"><?php echo $a_h['nick']; ?></span></span>
+        <span class="irc_message"><?php echo linkify(sanitize(convert_ascii('has quit ['.$a_h['message'].']')), "_blank"); ?></span>
       </div>
   <?php endif; ?>
 <?php endforeach; ?>
